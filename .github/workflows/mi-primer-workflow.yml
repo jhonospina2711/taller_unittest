@@ -7,7 +7,21 @@ on:
 
 jobs:
   mi-primer-job:
+    name: Mi primer job
+    runs-on: ubuntu-latest
+    outputs:
+      salida: ${{ steps.imprimir.outputs.respuesta }}
+    steps:
+      - name: Imprimir y definir output
+        id: imprimir
+        env:
+          MI_VARIABLE: Hola mundo
+        run: echo "respuesta=$MI_VARIABLE" >> "$GITHUB_OUTPUT"
+
+  mi-segundo-job:
+    name: Mi segundo job
+    needs: mi-primer-job
     runs-on: ubuntu-latest
     steps:
-      - name: Imprimir
-        run: echo "Hola mundo"
+      - name: Imprimir salida del primer job
+        run: echo "${{ needs.mi-primer-job.outputs.salida }}"

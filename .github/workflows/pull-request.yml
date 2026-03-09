@@ -1,0 +1,48 @@
+name: Automerge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  pruebas:
+    name: Pruebas
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout de repositorio
+        uses: actions/checkout@v4
+
+      - name: Configuración de entorno de python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalación de librerías y dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Correr pruebas (pytest)
+        run: pytest Comunidad/tests -v
+
+      - name: Cálculo de cubrimiento
+        run: pytest Comunidad/tests --cov=Comunidad --cov-report=term-missing
+
+  automerge:
+    name: Automerge
+    needs: pruebas
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Hacer merge automático del PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge ${{ github.event.pull_request.number }} --merge --delete-branch

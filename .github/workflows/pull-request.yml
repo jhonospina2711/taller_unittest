@@ -43,6 +43,9 @@ jobs:
     if: github.event.pull_request.draft == false
 
     steps:
+      - name: Checkout de repositorio
+        uses: actions/checkout@v4
+
       - name: Merge automático del PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

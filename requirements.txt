@@ -22,3 +22,4 @@ Flask-RESTful==0.3.10
 Flask-CORS==4.0.0
 pytest
 pytest-cov
+coverage

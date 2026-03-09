@@ -4,6 +4,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -42,7 +43,7 @@ jobs:
     if: github.event.pull_request.draft == false
 
     steps:
-      - name: Hacer merge automático del PR
+      - name: Merge automático del PR
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr merge ${{ github.event.pull_request.number }} --merge --delete-branch
